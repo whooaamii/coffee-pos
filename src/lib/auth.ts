@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 
 export async function getCurrentUser() {
-  const cookieStore = await cookies();
+  const cookieStore = await cookies(); // ✅ WAJIB await
   const sessionId = cookieStore.get("session")?.value;
 
   if (!sessionId) return null;
