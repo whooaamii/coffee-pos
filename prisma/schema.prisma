@@ -21,7 +21,7 @@ model User {
   role      Role     @default(CASHIER)
   createdAt DateTime @default(now())
 
-  sessions Session[] // ✅ DI SINI TEMPATNYA
+  sessions Session[] // 
 }
 
 model Session {
@@ -31,3 +31,23 @@ model Session {
   expiresAt DateTime
   createdAt DateTime @default(now())
 }
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String
+  createdAt DateTime  @default(now())
+
+  products  Product[]
+}
+
+model Product {
+  id         String    @id @default(cuid())
+  name       String
+  price      Int
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+
+  categoryId String
+  category   Category  @relation(fields: [categoryId], references: [id])
+}
+
