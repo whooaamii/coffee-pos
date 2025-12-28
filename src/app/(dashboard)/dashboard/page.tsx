@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 
+export const runtime = "nodejs";
 export default async function DashboardPage() {
   const user = await getCurrentUser();
 
