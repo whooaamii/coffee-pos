@@ -1,29 +1,61 @@
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import clsx from "clsx";
+"use client";
 
-type SidebarItemProps = {
-  label: string;
-  href: string;
-  icon: React.ElementType;
+import Link from "next/link";
+import { motion } from "motion/react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import type { SidebarItemType } from "./sidebar.config";
+
+type Props = {
+  item: SidebarItemType;
+  collapsed: boolean;
+  active: boolean;
 };
 
-export function SidebarItem({ label, href, icon: Icon }: SidebarItemProps) {
-  const pathname = usePathname();
-  const isActive = pathname === href;
+export function SidebarItem({ item, collapsed, active }: Props) {
+  const Icon = item.icon;
 
-  return (
-    <Link
-      href={href}
-      className={clsx(
-        "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors",
-        isActive
-          ? "bg-primary text-primary-foreground"
-          : "text-muted-foreground hover:bg-muted"
+  const ItemContent = (
+    <motion.div
+      whileHover={{ x: collapsed ? 0 : 4 }}
+      className={cn(
+        "flex items-center gap-3 rounded-xl transition-colors",
+        collapsed
+          ? "justify-center h-11 w-11 mx-auto"
+          : "px-3 py-3",
+        active
+          ? "bg-emerald-500/20 text-emerald-400"
+          : "text-slate-300 hover:bg-white/10"
       )}
     >
-      <Icon className="h-4 w-4" />
-      <span>{label}</span>
-    </Link>
+      <Icon className="h-5 w-5 shrink-0" />
+      {!collapsed && (
+        <span className="font-medium whitespace-nowrap">
+          {item.label}
+        </span>
+      )}
+    </motion.div>
   );
+
+  if (collapsed) {
+    return (
+      <TooltipProvider delayDuration={0}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Link href={item.href ?? "#"}>{ItemContent}</Link>
+          </TooltipTrigger>
+          <TooltipContent side="right">
+            {item.label}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
+
+  return <Link href={item.href ?? "#"}>{ItemContent}</Link>;
 }

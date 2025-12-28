@@ -1,41 +1,138 @@
+import type { LucideIcon } from "lucide-react";
 import {
   LayoutDashboard,
+  FolderKanban,
   Package,
   ShoppingCart,
-  User
+  History,
+  FileText,
+  User,
+  Settings,
+  CreditCard,
+  Printer,
 } from "lucide-react";
 
-export type Role = "ADMIN" | "CASHIER";
+/* ======================
+   TYPES
+====================== */
 
-export type SidebarItemConfig = {
+
+export type SidebarItemType = {
   label: string;
-  href: string;
-  icon: React.ElementType;
-  roles?: Role[];
+  href?: string;
+  icon: LucideIcon;
+  roles?: string[];
+  children?: SidebarItemType[];
 };
 
-export const sidebarConfig: SidebarItemConfig[] = [
+export type SidebarSectionType = {
+  title: string;
+  items: SidebarItemType[];
+};
+
+
+/* ======================
+   CONFIG (MATCH ROUTES)
+====================== */
+
+export const SIDEBAR_CONFIG: SidebarSectionType[] = [
   {
-    label: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-    roles: ["ADMIN"],
+    title: "OVERVIEW",
+    items: [
+      {
+        label: "Dashboard",
+        href: "/dashboard",
+        icon: LayoutDashboard,
+        roles: ["ADMIN", "KASIR"],
+      },
+    ],
   },
+
   {
-    label: "Products",
-    href: "/products",
-    icon: Package,
-    roles: ["ADMIN"],
+    title: "DATA",
+    items: [
+      {
+        label: "Kategori",
+        href: "/categories",
+        icon: FolderKanban,
+        roles: ["ADMIN"],
+      },
+      {
+        label: "Produk",
+        href: "/products",
+        icon: Package,
+        roles: ["ADMIN"],
+      },
+    ],
   },
+
   {
-    label: "POS",
-    href: "/pos",
-    icon: ShoppingCart,
-    roles: ["ADMIN", "CASHIER"],
+    title: "TRANSAKSI",
+    items: [
+      {
+        label: "POS",
+        href: "/pos",
+        icon: ShoppingCart,
+        roles: ["ADMIN", "KASIR"],
+      },
+      {
+        label: "Riwayat Transaksi",
+        href: "/transactions",
+        icon: History,
+        roles: ["ADMIN"],
+      },
+    ],
   },
+
   {
-    label: "Profile",
-    href: "/profile",
-    icon: User,
+    title: "LAPORAN",
+    items: [
+      {
+        label: "Laporan",
+        icon: FileText,
+        roles: ["ADMIN"],
+        children: [
+          {
+            label: "Harian",
+            href: "/reports/daily",
+            icon: FileText,
+          },
+          {
+            label: "Bulanan",
+            href: "/reports/monthly",
+            icon: FileText,
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    title: "USER & SETTINGS",
+    items: [
+      {
+        label: "User",
+        href: "/user",
+        icon: User,
+        roles: ["ADMIN"],
+      },
+      {
+        label: "Settings",
+        icon: Settings,
+        roles: ["ADMIN"],
+        children: [
+          {
+            label: "Payment",
+            href: "/settings/payment",
+            icon: CreditCard,
+          },
+          {
+            label: "Printer",
+            href: "/settings/printer",
+            icon: Printer,
+          },
+        ],
+      },
+    ],
   },
 ];
