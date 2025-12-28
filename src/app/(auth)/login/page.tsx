@@ -253,16 +253,16 @@ export default function LoginPage() {
               <p className="text-center text-sm text-muted-foreground">
                 Demo credentials: <br />
                 <span className="text-foreground">Email: </span>
-                <code className="px-2 py-1 bg-muted rounded text-xs">admin@demo.com</code>
+                <code className="px-2 py-1 bg-muted rounded text-xs">admin@coffee.com</code>
                 <br />
                 <span className="text-foreground">Password: </span>
-                <code className="px-2 py-1 bg-muted rounded text-xs">demo123</code>
+                <code className="px-2 py-1 bg-muted rounded text-xs">admin123</code>
               </p>
             </div>
           </Card>
 
           <p className="text-center text-sm text-muted-foreground mt-6">
-            © 2024 Coffee POS. All rights reserved.
+            © 2025 Padhe Coffee POS. All rights reserved.
           </p>
         </motion.div>
       </div>

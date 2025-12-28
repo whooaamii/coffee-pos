@@ -4,7 +4,7 @@ import { getCurrentUser } from "@/lib/auth";
 export default async function POSPage() {
   const user = await getCurrentUser();
 
-  if (!user || user.role !== "CASHIER") {
+  if (!user || user.role !== "CASHIER" && user.role !== "ADMIN") {
     redirect("/login");
   }
 
