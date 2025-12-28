@@ -2,28 +2,40 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-  const session = req.cookies.get("session");
+  const pathname = req.nextUrl.pathname;
 
-  // ⛔ API JANGAN PERNAH DIPROTECT
-  if (pathname.startsWith("/api")) {
+  // Allow the public login page and static/_next resources
+  if (
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/_next") ||
+    pathname === "/favicon.ico"
+  ) {
     return NextResponse.next();
   }
 
-  // ⛔ LOGIN PAGE BOLEH TANPA SESSION
-  if (pathname.startsWith("/login")) {
-    return NextResponse.next();
-  }
-
-  // 🔐 PAGE LAIN WAJIB LOGIN
+  // If there's no session cookie, redirect to login
+  const session = req.cookies.get("session")?.value;
   if (!session) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    const url = req.nextUrl.clone();
+    url.pathname = "/login";
+    url.search = `from=${encodeURIComponent(req.nextUrl.pathname)}`;
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();
 }
 
-// 🔴 WAJIB ADA
+// Middleware should only run for protected dashboard routes.
+// Excluding `/api` entirely avoids accidental blocking of API routes.
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/dashboard/:path*",
+    "/categories/:path*",
+    "/products/:path*",
+    "/pos/:path*",
+    "/reports/:path*",
+    "/user/:path*",
+    "/settings/:path*",
+    "/transactions/:path*",
+  ],
 };
