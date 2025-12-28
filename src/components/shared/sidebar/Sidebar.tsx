@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { usePathname, useRouter } from "next/navigation";
 import { Coffee, LogOut } from "lucide-react";
-
 import { SIDEBAR_CONFIG } from "./sidebar.config";
 import type { SidebarSectionType } from "./sidebar.config";
 import { SidebarItem } from "./SidebarItem";
@@ -12,6 +11,20 @@ import { SidebarExpandable } from "./SidebarExpandable";
 import { SidebarUser } from "./SidebarUser";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import type { Role } from "@prisma/client";
+import { useAuth } from "@/context/auth-context";
+
+export function ProfilePage() {
+  const { user, role } = useAuth();
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>Role: {role}</p>
+    </div>
+  );
+}
+
 
 function useIsTablet() {
   const [isTablet, setIsTablet] = useState(false);
@@ -27,7 +40,7 @@ function useIsTablet() {
   return isTablet;
 }
 
-export function Sidebar() {
+export function Sidebar({ role }: { role: Role }) {
   const pathname = usePathname();
   const router = useRouter();
   const isTablet = useIsTablet();
@@ -38,11 +51,28 @@ export function Sidebar() {
     router.push("/login");
   }
 
+  const filteredSections = SIDEBAR_CONFIG
+    .map((section) => {
+      const filteredItems = section.items.filter((item) => {
+        // kalau tidak ada roles → semua boleh lihat
+        if (!item.roles) return true;
+
+        // ✅ FIX FINAL (NO STRING CONVERSION)
+        return item.roles.includes(role);
+      });
+
+      return {
+        ...section,
+        items: filteredItems,
+      };
+    })
+    .filter((section) => section.items.length > 0);
+
   return (
     <motion.aside
       className={cn(
-        "h-screen bg-gradient-to-b from-slate-700 to-slate-800 text-white flex flex-col transition-all duration-300",
-        collapsed ? "w-20" : "w-70"
+        "h-screen bg-zinc-900 text-slate-100 border-r border-white/5 flex flex-col transition-all duration-300",
+        collapsed ? "w-20" : "w-72"
       )}
     >
       {/* HEADER */}
@@ -53,7 +83,7 @@ export function Sidebar() {
 
         {!collapsed && (
           <div>
-            <h1 className="text-lg font-bold">Coffee POS</h1>
+            <h1 className="text-lg font-bold">Padhe Coffee</h1>
             <p className="text-xs text-slate-300">Point of Sale</p>
           </div>
         )}
@@ -61,10 +91,10 @@ export function Sidebar() {
 
       {/* NAV */}
       <nav className="flex-1 px-3 py-4 space-y-6 overflow-y-auto">
-        {SIDEBAR_CONFIG.map((section: SidebarSectionType) => (
+        {filteredSections.map((section: SidebarSectionType) => (
           <div key={section.title}>
             {!collapsed && (
-              <p className="text-xs font-semibold text-slate-400 mb-2 px-3">
+              <p className="text-[11px] uppercase tracking-wide text-slate-500 mb-2 px-3">
                 {section.title}
               </p>
             )}
@@ -83,7 +113,10 @@ export function Sidebar() {
                     key={item.label}
                     item={item}
                     collapsed={collapsed}
-                    active={pathname === item.href}
+                    active={
+                      pathname === item.href ||
+                      pathname.startsWith(item.href + "/")
+                    }
                   />
                 )
               )}

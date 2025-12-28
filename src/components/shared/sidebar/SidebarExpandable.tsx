@@ -25,6 +25,21 @@ type Props = {
   pathname: string;
 };
 
+
+import { useAuth } from "@/context/auth-context";
+
+export function ProfilePage() {
+  const { user, role } = useAuth();
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>Role: {role}</p>
+    </div>
+  );
+}
+
+
 export function SidebarExpandable({ item, collapsed, pathname }: Props) {
   const isRouteActive = item.children?.some(
     (child) => pathname.startsWith(child.href ?? "")

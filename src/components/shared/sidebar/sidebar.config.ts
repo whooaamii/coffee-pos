@@ -10,18 +10,19 @@ import {
   Settings,
   CreditCard,
   Printer,
+  Dot,
 } from "lucide-react";
+import type { Role } from "@prisma/client";
 
 /* ======================
    TYPES
 ====================== */
 
-
 export type SidebarItemType = {
   label: string;
   href?: string;
   icon: LucideIcon;
-  roles?: string[];
+  roles?: Role[]; // ✅ ARRAY
   children?: SidebarItemType[];
 };
 
@@ -29,7 +30,6 @@ export type SidebarSectionType = {
   title: string;
   items: SidebarItemType[];
 };
-
 
 /* ======================
    CONFIG (MATCH ROUTES)
@@ -43,7 +43,7 @@ export const SIDEBAR_CONFIG: SidebarSectionType[] = [
         label: "Dashboard",
         href: "/dashboard",
         icon: LayoutDashboard,
-        roles: ["ADMIN", "KASIR"],
+        roles: ["ADMIN", "CASHIER"], // ✅ FIX
       },
     ],
   },
@@ -55,7 +55,7 @@ export const SIDEBAR_CONFIG: SidebarSectionType[] = [
         label: "Kategori",
         href: "/categories",
         icon: FolderKanban,
-        roles: ["ADMIN"],
+        roles: ["ADMIN"], // ✅ ADMIN only
       },
       {
         label: "Produk",
@@ -73,13 +73,13 @@ export const SIDEBAR_CONFIG: SidebarSectionType[] = [
         label: "POS",
         href: "/pos",
         icon: ShoppingCart,
-        roles: ["ADMIN", "KASIR"],
+        roles: ["ADMIN", "CASHIER"],
       },
       {
         label: "Riwayat Transaksi",
         href: "/transactions",
         icon: History,
-        roles: ["ADMIN"],
+        roles: ["ADMIN", "CASHIER"],
       },
     ],
   },
@@ -95,12 +95,14 @@ export const SIDEBAR_CONFIG: SidebarSectionType[] = [
           {
             label: "Harian",
             href: "/reports/daily",
-            icon: FileText,
+            icon: Dot,
+            roles: ["ADMIN"],
           },
           {
             label: "Bulanan",
             href: "/reports/monthly",
-            icon: FileText,
+            icon: Dot,
+            roles: ["ADMIN"],
           },
         ],
       },
@@ -125,11 +127,13 @@ export const SIDEBAR_CONFIG: SidebarSectionType[] = [
             label: "Payment",
             href: "/settings/payment",
             icon: CreditCard,
+            roles: ["ADMIN"],
           },
           {
             label: "Printer",
             href: "/settings/printer",
             icon: Printer,
+            roles: ["ADMIN"],
           },
         ],
       },

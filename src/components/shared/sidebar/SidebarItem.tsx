@@ -11,6 +11,20 @@ import {
 import { cn } from "@/lib/utils";
 import type { SidebarItemType } from "./sidebar.config";
 
+import { useAuth } from "@/context/auth-context";
+
+export function ProfilePage() {
+  const { user, role } = useAuth();
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>Role: {role}</p>
+    </div>
+  );
+}
+
+
 type Props = {
   item: SidebarItemType;
   collapsed: boolean;
@@ -29,8 +43,8 @@ export function SidebarItem({ item, collapsed, active }: Props) {
           ? "justify-center h-11 w-11 mx-auto"
           : "px-3 py-3",
         active
-          ? "bg-emerald-500/20 text-emerald-400"
-          : "text-slate-300 hover:bg-white/10"
+          ? "bg-emerald-500/15 text-emerald-400"
+          : "text-slate-300 hover:bg-white/5"
       )}
     >
       <Icon className="h-5 w-5 shrink-0" />
