@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { logoutAction } from "@/app/actions/auth";
 
+export const runtime = "nodejs";
 export default async function ProfilePage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");

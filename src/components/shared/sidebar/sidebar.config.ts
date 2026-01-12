@@ -77,7 +77,7 @@ export const SIDEBAR_CONFIG: SidebarSectionType[] = [
       },
       {
         label: "Riwayat Transaksi",
-        href: "/transactions",
+        href: "/order",
         icon: History,
         roles: ["ADMIN", "CASHIER"],
       },

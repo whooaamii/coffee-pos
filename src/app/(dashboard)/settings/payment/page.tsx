@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 export default function PaymentSettingsPage() {
   return (
     <div>

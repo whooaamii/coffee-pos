@@ -8,46 +8,72 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-enum Role {
-  ADMIN
-  CASHIER
-}
-
 model User {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   name      String
-  email     String   @unique
+  email     String    @unique
   password  String
-  role      Role     @default(CASHIER)
-  createdAt DateTime @default(now())
-
-  sessions Session[] // 
+  image     String?   //
+  role      Role      @default(CASHIER)
+  createdAt DateTime  @default(now())
+  sessions  Session[]
 }
 
 model Session {
   id        String   @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Category {
   id        String    @id @default(cuid())
-  name      String
+  name      String    @unique
   createdAt DateTime  @default(now())
-
+  color     String   @default("slate") 
+  updatedAt DateTime  @updatedAt
   products  Product[]
 }
 
 model Product {
-  id         String    @id @default(cuid())
-  name       String
-  price      Int
-  isActive   Boolean   @default(true)
-  createdAt  DateTime  @default(now())
+  id           String       @id @default(cuid())
+  name         String
+  price        Int
+  isActive     Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  categoryId   String
+  description  String?
+  sku          String?      @unique
+  stock        Int          @default(0)
+  categoryType CategoryType @default(FOOD)
+  imageUrl     String?
+  updateAt     DateTime?    @default(now()) @db.Timestamptz(6)
+  category     Category     @relation(fields: [categoryId], references: [id])
 
-  categoryId String
-  category   Category  @relation(fields: [categoryId], references: [id])
+  @@index([categoryId])
 }
 
+enum Role {
+  ADMIN
+  CASHIER
+}
+
+enum CategoryType {
+  FOOD
+  DRINK
+}
+
+model Order {
+  id            String   @id // Kita gunakan ID dari generateOrderId ("POS-xxx")
+  customerName  String   @default("Guest")
+  total         Int
+  paid          Int
+  paymentMethod String
+  orderType     String
+  items         Json     // Kita simpan detail produk dalam format JSON agar fleksibel
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([createdAt]) // Penting agar query dashboard/grafik kencang
+}

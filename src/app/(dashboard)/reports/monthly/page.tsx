@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 export default function MonthlyReportPage() {
   return (
     <div>

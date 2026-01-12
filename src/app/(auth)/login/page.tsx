@@ -43,7 +43,7 @@ export default function LoginPage() {
         return;
       }
 
-      toast.success("Login berhasil! Selamat datang 👋");
+      toast.success("Login berhasil! Selamat datang");
 
       // 🔐 ROLE REDIRECT (logic backend kamu)
       if (data.role === "ADMIN") {
@@ -67,7 +67,7 @@ export default function LoginPage() {
         transition={{ duration: 0.8 }}
         className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/70 to-primary/50 z-10" />
+        <div className="absolute inset-0 bg-linear-to-br from-primary/90 via-primary/70 to-primary/50 z-10" />
         <Image
           src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2ZmZWUlMjBzaG9wJTIwaW50ZXJpb3J8ZW58MXx8fHwxNzY2NjU2Mzk5fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
           alt="Coffee Shop"
@@ -248,21 +248,10 @@ export default function LoginPage() {
                 )}
               </Button>
             </form>
-
-            <div className="mt-6 pt-6 border-t border-border/50">
-              <p className="text-center text-sm text-muted-foreground">
-                Demo credentials: <br />
-                <span className="text-foreground">Email: </span>
-                <code className="px-2 py-1 bg-muted rounded text-xs">admin@coffee.com</code>
-                <br />
-                <span className="text-foreground">Password: </span>
-                <code className="px-2 py-1 bg-muted rounded text-xs">admin123</code>
-              </p>
-            </div>
           </Card>
 
           <p className="text-center text-sm text-muted-foreground mt-6">
-            © 2025 Padhe Coffee POS. All rights reserved.
+            © 2026 Padhe Coffee POS. All rights reserved.
           </p>
         </motion.div>
       </div>

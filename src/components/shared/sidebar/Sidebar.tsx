@@ -3,20 +3,17 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { usePathname, useRouter } from "next/navigation";
-import { Coffee, LogOut } from "lucide-react";
-import { SIDEBAR_CONFIG } from "./sidebar.config";
+import { Coffee, LogOut, ChevronLeft, ChevronRight } from "lucide-react"; import { SIDEBAR_CONFIG } from "./sidebar.config";
 import type { SidebarSectionType } from "./sidebar.config";
 import { SidebarItem } from "./SidebarItem";
 import { SidebarExpandable } from "./SidebarExpandable";
 import { SidebarUser } from "./SidebarUser";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Role } from "@prisma/client";
 import { useAuth } from "@/context/auth-context";
 
 export function ProfilePage() {
   const { user, role } = useAuth();
-
   return (
     <div>
       <h1>{user.name}</h1>
@@ -28,7 +25,6 @@ export function ProfilePage() {
 
 function useIsTablet() {
   const [isTablet, setIsTablet] = useState(false);
-
   useEffect(() => {
     const media = window.matchMedia("(max-width: 1024px)");
     const handler = () => setIsTablet(media.matches);
@@ -36,15 +32,20 @@ function useIsTablet() {
     media.addEventListener("change", handler);
     return () => media.removeEventListener("change", handler);
   }, []);
-
   return isTablet;
 }
 
 export function Sidebar({ role }: { role: Role }) {
   const pathname = usePathname();
-  const router = useRouter();
+  const router = useRouter(); //
   const isTablet = useIsTablet();
-  const collapsed = isTablet;
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  useEffect(() => {
+    setIsCollapsed(isTablet);
+  }, [isTablet]);
+
+  const collapsed = isCollapsed;
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -54,47 +55,60 @@ export function Sidebar({ role }: { role: Role }) {
   const filteredSections = SIDEBAR_CONFIG
     .map((section) => {
       const filteredItems = section.items.filter((item) => {
-        // kalau tidak ada roles → semua boleh lihat
         if (!item.roles) return true;
-
-        // ✅ FIX FINAL (NO STRING CONVERSION)
         return item.roles.includes(role);
       });
-
-      return {
-        ...section,
-        items: filteredItems,
-      };
+      return { ...section, items: filteredItems };
     })
     .filter((section) => section.items.length > 0);
 
   return (
     <motion.aside
       className={cn(
-        "h-screen bg-zinc-900 text-slate-100 border-r border-white/5 flex flex-col transition-all duration-300",
+        /* WARNA: Menggunakan bg-sidebar (Putih) dan border-r halus */
+        "relative h-screen bg-sidebar text-foreground border-r border-sidebar-border flex flex-col transition-all duration-300",
         collapsed ? "w-20" : "w-72"
       )}
     >
-      {/* HEADER */}
-      <div className="flex items-center gap-3 px-4 py-6">
-        <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
-          <Coffee className="h-5 w-5 text-emerald-400" />
+      {/*  TOGGLE BUTTON */}
+      <button
+        onClick={() => setIsCollapsed(!collapsed)}
+        className="absolute -right-3 top-10 z-100 flex h-6 w-6 items-center justify-center rounded-full border border-sidebar-border bg-white shadow-md hover:scale-110 transition-all cursor-pointer"
+      >
+        {collapsed ? (
+          <ChevronRight className="h-3 w-3 text-muted-foreground group-hover:text-primary" />
+        ) : (
+          <ChevronLeft className="h-3 w-3 text-muted-foreground group-hover:text-primary" />
+        )}
+      </button>
+
+      {/* HEADER: Aksen Branding dengan Logo Hitam */}
+      <div className="flex items-center gap-3 px-6 py-8">
+        <div className="w-10 h-10 bg-primary text-primary-foreground rounded-xl flex items-center justify-center shadow-sm">
+          <Coffee className="h-5 w-5" />
         </div>
 
         {!collapsed && (
-          <div>
-            <h1 className="text-lg font-bold">Padhe Coffee</h1>
-            <p className="text-xs text-slate-300">Point of Sale</p>
+          <div className="flex flex-col">
+            <h1 className="text-lg font-bold tracking-tight leading-none text-primary">Padhe Coffee</h1>
+            <p className="text-[10px] font-medium uppercase tracking-widest mt-1 text-muted-foreground">Point of Sale</p>
           </div>
         )}
       </div>
 
       {/* NAV */}
-      <nav className="flex-1 px-3 py-4 space-y-6 overflow-y-auto">
-        {filteredSections.map((section: SidebarSectionType) => (
-          <div key={section.title}>
+      <nav className="flex-1 px-4 py-2 space-y-2 overflow-y-auto custom-sidebar-scroll">
+        {filteredSections.map((section: SidebarSectionType, index: number) => (
+          <div
+            key={section.title}
+            className={cn(
+              "space-y-1",
+              /* 1. Tambahkan Border Top sebagai Divider jika bukan seksi pertama */
+              index !== 0 && "pt-4 mt-4 border-t border-slate-200/60"
+            )}
+          >
             {!collapsed && (
-              <p className="text-[11px] uppercase tracking-wide text-slate-500 mb-2 px-3">
+              <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground/50 mb-2 px-4">
                 {section.title}
               </p>
             )}
@@ -113,10 +127,7 @@ export function Sidebar({ role }: { role: Role }) {
                     key={item.label}
                     item={item}
                     collapsed={collapsed}
-                    active={
-                      pathname === item.href ||
-                      pathname.startsWith(item.href + "/")
-                    }
+                    active={pathname === item.href || pathname.startsWith(item.href + "/")}
                   />
                 )
               )}
@@ -125,18 +136,38 @@ export function Sidebar({ role }: { role: Role }) {
         ))}
       </nav>
 
-      {/* USER */}
-      <div className="border-t border-white/10 p-4 space-y-2">
-        <SidebarUser collapsed={collapsed} />
+      {/* USER SECTION: Bersih tanpa glassmorphism berlebih agar minimalis */}
+      <div className="mt-auto p-4 border-t border-sidebar-border space-y-2">
+        <div className="rounded-xl hover:bg-accent transition-colors">
+          <SidebarUser collapsed={collapsed} />
+        </div>
 
-        <Button
-          variant="ghost"
+        <button
           onClick={handleLogout}
-          className="w-full justify-start text-white hover:bg-white/10"
+          onMouseEnter={(e) => {
+            const icon = e.currentTarget.querySelector('svg');
+            const text = e.currentTarget.querySelector('span');
+            if (icon) icon.style.color = '#ef4444'; // Warna merah destructive
+            if (text) text.style.color = '#ef4444';
+            e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+          }}
+          onMouseLeave={(e) => {
+            const icon = e.currentTarget.querySelector('svg');
+            const text = e.currentTarget.querySelector('span');
+            if (icon) icon.style.color = ''; // Kembali ke awal
+            if (text) text.style.color = '';
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }}
+          className="flex items-center w-full px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer text-muted-foreground"
         >
-          <LogOut className="h-4 w-4 mr-2" />
-          {!collapsed && "Keluar"}
-        </Button>
+          <LogOut className="h-4 w-4 mr-3 transition-colors duration-300" />
+
+          {!collapsed && (
+            <span className="text-xs font-bold uppercase tracking-wider transition-colors duration-300">
+              Keluar
+            </span>
+          )}
+        </button>
       </div>
     </motion.aside>
   );
