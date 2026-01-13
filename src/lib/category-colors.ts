@@ -1,67 +1,66 @@
 /* =========================
-   CATEGORY COLOR TOKENS
-========================= */
+   CATEGORY COLOR TOKENS (V2.0 PREMIUM)
+   ========================= */
 
 export const CATEGORY_COLOR_STYLES = {
-  red: {
-    dot: "bg-red-500",
-    badge: "bg-red-100 text-red-800 border-red-200",
-  },
-  amber: {
-    dot: "bg-amber-500",
-    badge: "bg-amber-100 text-amber-800 border-amber-200",
-  },
-  lime: {
-    dot: "bg-lime-500",
-    badge: "bg-lime-100 text-lime-800 border-lime-200",
-  },
-  gray: {
-    dot: "bg-gray-400",
-    badge: "bg-gray-100 text-gray-800 border-gray-200",
-  },
+  // Signature / Coffee vibe
   brown: {
-    dot: "bg-[#8B5A2B]",
-    badge: "bg-[#F3E9DF] text-[#5C3A1E] border-[#E4D3C3]",
+    dot: "bg-[#8B5A2B] shadow-[0_0_8px_rgba(139,90,43,0.4)]",
+    badge: "bg-[#F3E9DF] text-[#5C3A1E] border-[#E4D3C3] font-black",
   },
+  // Soft & Modern Colors
   cyan: {
-    dot: "bg-cyan-500",
-    badge: "bg-cyan-100 text-cyan-800 border-cyan-200",
+    dot: "bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.4)]",
+    badge: "bg-cyan-50 text-cyan-700 border-cyan-100 font-black",
   },
-  pink: {
-    dot: "bg-pink-500",
-    badge: "bg-pink-100 text-pink-800 border-pink-200",
+  emerald: {
+    dot: "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]",
+    badge: "bg-emerald-50 text-emerald-700 border-emerald-100 font-black",
   },
   violet: {
-    dot: "bg-violet-500",
-    badge: "bg-violet-100 text-violet-800 border-violet-200",
+    dot: "bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.4)]",
+    badge: "bg-violet-50 text-violet-700 border-violet-100 font-black",
   },
-  teal: {
-    dot: "bg-teal-500",
-    badge: "bg-teal-100 text-teal-800 border-teal-200",
+  rose: {
+    dot: "bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)]",
+    badge: "bg-rose-50 text-rose-700 border-rose-100 font-black",
+  },
+  amber: {
+    dot: "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]",
+    badge: "bg-amber-50 text-amber-700 border-amber-100 font-black",
   },
   orange: {
-    dot: "bg-orange-500",
-    badge: "bg-orange-100 text-orange-800 border-orange-200",
+    dot: "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.4)]",
+    badge: "bg-orange-50 text-orange-700 border-orange-100 font-black",
+  },
+  indigo: {
+    dot: "bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]",
+    badge: "bg-indigo-50 text-indigo-700 border-indigo-100 font-black",
   },
   slate: {
-    dot: "bg-slate-400",
-    badge: "bg-slate-100 text-slate-800 border-slate-200",
+    dot: "bg-slate-500 shadow-[0_0_8px_rgba(100,116,139,0.4)]",
+    badge: "bg-slate-100 text-slate-700 border-slate-200 font-black",
+  },
+  // ADDED 3 NEW COLORS FOR TOTAL 12
+  blue: {
+    dot: "bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.4)]",
+    badge: "bg-blue-50 text-blue-700 border-blue-100 font-black",
+  },
+  pink: {
+    dot: "bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.4)]",
+    badge: "bg-pink-50 text-pink-700 border-pink-100 font-black",
+  },
+  lime: {
+    dot: "bg-lime-500 shadow-[0_0_8px_rgba(132,204,22,0.4)]",
+    badge: "bg-lime-50 text-lime-700 border-lime-100 font-black",
   },
 } as const;
 
-/* =========================
-   TYPES
-========================= */
-
 export type CategoryColor = keyof typeof CATEGORY_COLOR_STYLES;
 
-/* =========================
-   NORMALIZER
-========================= */
-
-export function toCategoryColor(value?: string): CategoryColor {
+export function toCategoryColor(value?: string | null): CategoryColor {
   if (!value) return "slate";
-  if (value in CATEGORY_COLOR_STYLES) {
+  if (Object.prototype.hasOwnProperty.call(CATEGORY_COLOR_STYLES, value)) {
     return value as CategoryColor;
   }
   return "slate";

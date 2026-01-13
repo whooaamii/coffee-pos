@@ -4,11 +4,6 @@ import { CategoryTable } from "@/components/shared/categories/CategoryTable";
 export default async function CategoriesPage() {
   const categories = await getCategories();
 
-  return (
-    <div className="p-6 space-y-6">
-     
-
-      <CategoryTable data={categories} />
-    </div>
-  );
+  // JANGAN bungkus dengan div min-h-full agar tidak ada margin ekstra
+  return <CategoryTable data={categories} />;
 }
