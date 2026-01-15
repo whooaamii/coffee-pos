@@ -7,9 +7,6 @@ import {
   History,
   FileText,
   User,
-  Settings,
-  CreditCard,
-  Printer,
   Dot,
 } from "lucide-react";
 import type { Role } from "@prisma/client";
@@ -43,7 +40,7 @@ export const SIDEBAR_CONFIG: SidebarSectionType[] = [
         label: "Dashboard",
         href: "/dashboard",
         icon: LayoutDashboard,
-        roles: ["ADMIN", "CASHIER"], // ✅ FIX
+        roles: ["ADMIN"], // ✅ FIX
       },
     ],
   },
@@ -90,19 +87,19 @@ export const SIDEBAR_CONFIG: SidebarSectionType[] = [
       {
         label: "Laporan",
         icon: FileText,
-        roles: ["ADMIN"],
+        roles: ["ADMIN", "CASHIER"],
         children: [
           {
             label: "Harian",
             href: "/reports/daily",
             icon: Dot,
-            roles: ["ADMIN"],
+            roles: ["ADMIN", "CASHIER"],
           },
           {
             label: "Bulanan",
             href: "/reports/monthly",
             icon: Dot,
-            roles: ["ADMIN"],
+            roles: ["ADMIN", "CASHIER"],
           },
         ],
       },
@@ -110,33 +107,14 @@ export const SIDEBAR_CONFIG: SidebarSectionType[] = [
   },
 
   {
-    title: "USER & SETTINGS",
+    title: "USER MANAGEMENT",
     items: [
       {
         label: "User",
         href: "/user",
         icon: User,
         roles: ["ADMIN"],
-      },
-      {
-        label: "Settings",
-        icon: Settings,
-        roles: ["ADMIN"],
-        children: [
-          {
-            label: "Payment",
-            href: "/settings/payment",
-            icon: CreditCard,
-            roles: ["ADMIN"],
-          },
-          {
-            label: "Printer",
-            href: "/settings/printer",
-            icon: Printer,
-            roles: ["ADMIN"],
-          },
-        ],
-      },
+      },  
     ],
   },
 ];

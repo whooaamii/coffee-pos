@@ -112,8 +112,9 @@ export function SidebarExpandable({ item, collapsed, pathname }: Props) {
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
-                 exit={{ height: 0, opacity: 0 }}
-                className="ml-6.5 mt-1 space-y-1 border-l-2 border-accent/50 pl-2"            >
+                exit={{ height: 0, opacity: 0 }}
+                /* PREMIUM UPDATE: Garis indikator yang lebih elegan */
+                className="ml-6.5 mt-1 space-y-1 border-l-2 border-slate-100 pl-2 py-1"            >
                 {item.children?.map((child) => (
                   <SidebarItem
                     key={child.label}

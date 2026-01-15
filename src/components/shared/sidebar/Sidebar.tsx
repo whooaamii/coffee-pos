@@ -3,25 +3,33 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { usePathname, useRouter } from "next/navigation";
-import { Coffee, LogOut, ChevronLeft, ChevronRight } from "lucide-react"; import { SIDEBAR_CONFIG } from "./sidebar.config";
-import type { SidebarSectionType } from "./sidebar.config";
+import { Coffee, LogOut, ChevronLeft, ChevronRight } from "lucide-react"; 
+import { SIDEBAR_CONFIG } from "./sidebar.config";
 import { SidebarItem } from "./SidebarItem";
 import { SidebarExpandable } from "./SidebarExpandable";
-import { SidebarUser } from "./SidebarUser";
 import { cn } from "@/lib/utils";
 import type { Role } from "@prisma/client";
 import { useAuth } from "@/context/auth-context";
 
 export function ProfilePage() {
   const { user, role } = useAuth();
+
+  if (!user) {
+    return (
+      <div className="flex items-center gap-2 px-6 py-4">
+        <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        <span className="text-xs text-muted-foreground italic">Menyiapkan profil...</span>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <h1>{user.name}</h1>
-      <p>Role: {role}</p>
+    <div className="px-6 py-4">
+      <h1 className="font-bold text-slate-800">{user.name}</h1>
+      <p className="text-xs text-muted-foreground uppercase tracking-widest">Role: {role}</p>
     </div>
   );
 }
-
 
 function useIsTablet() {
   const [isTablet, setIsTablet] = useState(false);
@@ -37,7 +45,7 @@ function useIsTablet() {
 
 export function Sidebar({ role }: { role: Role }) {
   const pathname = usePathname();
-  const router = useRouter(); //
+  const router = useRouter(); 
   const isTablet = useIsTablet();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -65,54 +73,51 @@ export function Sidebar({ role }: { role: Role }) {
   return (
     <motion.aside
       className={cn(
-        /* WARNA: Menggunakan bg-sidebar (Putih) dan border-r halus */
         "relative h-screen bg-sidebar text-foreground border-r border-sidebar-border flex flex-col transition-all duration-300",
         collapsed ? "w-20" : "w-72"
       )}
     >
-      {/*  TOGGLE BUTTON */}
+      {/* TOGGLE BUTTON */}
       <button
         onClick={() => setIsCollapsed(!collapsed)}
-        className="absolute -right-3 top-10 z-100 flex h-6 w-6 items-center justify-center rounded-full border border-sidebar-border bg-white shadow-md hover:scale-110 transition-all cursor-pointer"
+        className="absolute -right-3 top-10 z-40 flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm hover:scale-110 transition-all cursor-pointer"
       >
-        {collapsed ? (
-          <ChevronRight className="h-3 w-3 text-muted-foreground group-hover:text-primary" />
-        ) : (
-          <ChevronLeft className="h-3 w-3 text-muted-foreground group-hover:text-primary" />
-        )}
+        {collapsed ? <ChevronRight className="h-3 w-3 text-slate-400" /> : <ChevronLeft className="h-3 w-3 text-slate-400" />}
       </button>
 
-      {/* HEADER: Aksen Branding dengan Logo Hitam */}
-      <div className="flex items-center gap-3 px-6 py-8">
-        <div className="w-10 h-10 bg-primary text-primary-foreground rounded-xl flex items-center justify-center shadow-sm">
+      {/* HEADER */}
+      <div className="flex items-center gap-3 px-6 py-8 group cursor-default">
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          className="w-10 h-10 bg-slate-900 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-black/5"
+        >
           <Coffee className="h-5 w-5" />
-        </div>
+        </motion.div>
 
         {!collapsed && (
           <div className="flex flex-col">
-            <h1 className="text-lg font-bold tracking-tight leading-none text-primary">Padhe Coffee</h1>
-            <p className="text-[10px] font-medium uppercase tracking-widest mt-1 text-muted-foreground">Point of Sale</p>
+            <h1 className="text-lg font-black tracking-tight leading-none text-slate-900">Padhe Coffee</h1>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] mt-1 text-slate-400">Point of Sale</p>
           </div>
         )}
       </div>
 
-      {/* NAV */}
-      <nav className="flex-1 px-4 py-2 space-y-2 overflow-y-auto custom-sidebar-scroll">
-        {filteredSections.map((section: SidebarSectionType, index: number) => (
-          <div
-            key={section.title}
+      {/* NAV: Mengurangi gap dan menambah divider */}
+      <nav className="flex-1 px-4 py-0 space-y-1 overflow-y-auto custom-sidebar-scroll">
+        {filteredSections.map((section, index) => (
+          <div 
+            key={section.title} 
             className={cn(
-              "space-y-1",
-              /* 1. Tambahkan Border Top sebagai Divider jika bukan seksi pertama */
-              index !== 0 && "pt-4 mt-4 border-t border-slate-200/60"
+              "space-y-1", 
+              /* Menggunakan pt-4 mt-4 dan divider border-t */
+              index !== 0 && "pt-4 mt-4 border-t border-slate-200"
             )}
           >
             {!collapsed && (
-              <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground/50 mb-2 px-4">
+              <p className="text-[9px] uppercase font-black tracking-[0.25em] text-slate-300 mb-2 px-4">
                 {section.title}
               </p>
             )}
-
             <div className="space-y-1">
               {section.items.map((item) =>
                 item.children ? (
@@ -136,32 +141,27 @@ export function Sidebar({ role }: { role: Role }) {
         ))}
       </nav>
 
-      {/* USER SECTION: Bersih tanpa glassmorphism berlebih agar minimalis */}
-      <div className="mt-auto p-4 border-t border-sidebar-border space-y-2">
-        <div className="rounded-xl hover:bg-accent transition-colors">
-          <SidebarUser collapsed={collapsed} />
-        </div>
-
+      {/* FOOTER: Ditambah background halus dan border top */}
+      <div className="mt-auto p-4 border-t border-sidebar-border space-y-2 bg-slate-50/30">
         <button
           onClick={handleLogout}
           onMouseEnter={(e) => {
             const icon = e.currentTarget.querySelector('svg');
             const text = e.currentTarget.querySelector('span');
-            if (icon) icon.style.color = '#ef4444'; // Warna merah destructive
+            if (icon) icon.style.color = '#ef4444';
             if (text) text.style.color = '#ef4444';
             e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
           }}
           onMouseLeave={(e) => {
             const icon = e.currentTarget.querySelector('svg');
             const text = e.currentTarget.querySelector('span');
-            if (icon) icon.style.color = ''; // Kembali ke awal
+            if (icon) icon.style.color = '';
             if (text) text.style.color = '';
             e.currentTarget.style.backgroundColor = 'transparent';
           }}
           className="flex items-center w-full px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer text-muted-foreground"
         >
           <LogOut className="h-4 w-4 mr-3 transition-colors duration-300" />
-
           {!collapsed && (
             <span className="text-xs font-bold uppercase tracking-wider transition-colors duration-300">
               Keluar
