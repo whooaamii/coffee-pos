@@ -6,7 +6,7 @@ import { OrderDrawer } from "./OrderDrawer";
 export function GlobalOrderDrawer() {
   const { isOpen, closeOrder, selectedOrderId } = useOrderStore();
 
-  if (!selectedOrderId) return null;
+  //if (!selectedOrderId) return null;
 
   return (
     <OrderDrawer 

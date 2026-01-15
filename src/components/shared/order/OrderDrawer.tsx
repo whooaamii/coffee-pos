@@ -58,7 +58,7 @@ export function OrderDrawer({ open, onClose, orderId }: Props) {
   // State untuk mengontrol Alert Dialog
   const [showVoidAlert, setShowVoidAlert] = useState(false);
 
-  if (!open) return null;
+  //if (!open) return null;
 
   const safeOrder = order as unknown as ExtendedOrder;
 
@@ -110,7 +110,7 @@ export function OrderDrawer({ open, onClose, orderId }: Props) {
   return (
     <>
       <Drawer open={open} onOpenChange={onClose} direction="right">
-        <DrawerContent className="w-105 sm:w-120 h-full flex flex-col">
+        <DrawerContent className="w-105 sm:w-120 h-full flex flex-col outline-none focus:outline-none focus-visible:ring-0">
           <DrawerHeader className="shrink-0 border-b">
             <DrawerTitle>Detail Transaksi</DrawerTitle>
           </DrawerHeader>

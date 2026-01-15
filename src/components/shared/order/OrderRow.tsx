@@ -21,10 +21,8 @@ export function OrderRow({ order }: Props) {
       layout
       whileHover="hover"
       initial="initial"
-      // FIX UTAMA: Menambahkan Shadow Cyan Glow (Neon Effect) saat Hover
       className={cn(
         "group cursor-pointer transition-all duration-500 relative border-b border-slate-50",
-        // Efek bayangan biru/cyan seperti di gambar kedua
         "hover:z-20 hover:bg-white hover:shadow-[0_0_25px_rgba(34,211,238,0.15),0_10px_15px_-3px_rgba(0,0,0,0.05)]",
         isSelected 
           ? "bg-cyan-50/60 z-10 shadow-[0_0_20px_rgba(34,211,238,0.1)]" 
@@ -32,7 +30,7 @@ export function OrderRow({ order }: Props) {
       )}
       onClick={() => openOrder(order.id)}
     >
-      {/* INDIKATOR CYAN (Scale Anim) */}
+      {/* INDIKATOR CYAN (Kini sejajar dengan header kolom 1) */}
       <td className="p-0 w-1 relative overflow-hidden">
         <div className={cn(
           "absolute inset-y-0 left-0 w-1 bg-cyan-500 transition-transform duration-500 origin-center",
@@ -40,8 +38,8 @@ export function OrderRow({ order }: Props) {
         )} />
       </td>
 
-      {/* 1. WAKTU */}
-      <td className="pl-8 pr-6 py-5 text-[11px] text-slate-500 font-bold uppercase tracking-tight group-hover:text-cyan-600 transition-colors">
+      {/* 1. WAKTU (Penyesuaian padding agar pas dengan header) */}
+      <td className="px-6 py-5 text-[11px] text-slate-500 font-bold uppercase tracking-tight group-hover:text-cyan-600 transition-colors">
         {new Date(order.createdAt).toLocaleString("id-ID", {
           day: '2-digit',
           month: 'short',

@@ -31,8 +31,8 @@ export function OrderTable({ orders, loading }: Props) {
       <table className="w-full text-sm border-separate border-spacing-0">
         <thead>
           <tr className="relative z-30">
-            {/** * Tiap <th> menggunakan sticky + bg solid untuk mencegah konten tembus.
-             */}
+            <th className="sticky top-0 z-30 bg-[#f8fafc] w-1 p-0 border-b border-slate-200 first:rounded-tl-3xl" />
+
             <th className="sticky top-0 z-30 bg-[#f8fafc] px-6 py-4 text-left font-black text-slate-500 uppercase tracking-wider text-[10px] first:rounded-tl-3xl border-b border-slate-200">
               Waktu
             </th>

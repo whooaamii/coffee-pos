@@ -7,8 +7,8 @@ import { startOfDay, endOfDay, isWithinInterval } from "date-fns";
 import * as XLSX from "xlsx";
 
 export type OrderRecord = LocalOrder;
-
-export function useOrderHistory() {
+ 
+export function useOrderHistory(options?: {allData?: boolean}) {
   const [orders, setOrders] = useState<OrderRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
@@ -56,8 +56,10 @@ export function useOrderHistory() {
 
       // FIX: Bandingkan langsung tanpa toUpperCase agar "Dine In" (dengan spasi) bisa terbaca benar
       const matchesType = type === "all" || o.orderType === type;
-
+ 
+      // Filter berdasarkan rentang tanggal
       let matchesDate = true;
+      if (!options?.allData) {
       if (dateRange?.from && dateRange?.to) {
         const orderDate = new Date(o.createdAt);
         matchesDate = isWithinInterval(orderDate, {
@@ -68,10 +70,11 @@ export function useOrderHistory() {
         const orderDate = new Date(o.createdAt);
         matchesDate = orderDate.toDateString() === dateRange.from.toDateString();
       }
+    }
 
       return matchesSearch && matchesMethod && matchesType && matchesDate;
     });
-  }, [orders, search, method, type, dateRange]);
+  }, [orders, search, method, type, dateRange, options?.allData]);
 
   // Fungsi Export tetap sama...
   const onExport = useCallback(() => {
@@ -116,3 +119,4 @@ export function useOrderHistory() {
     setSelectedOrderId
   };
 }
+
